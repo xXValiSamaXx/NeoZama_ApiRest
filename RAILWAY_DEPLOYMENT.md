@@ -77,9 +77,17 @@ git push -u origin main
 3. Selecciona tu repositorio: **`xXValiSamaXx/NeoZama_ApiRest`**
 4. Railway detectará automáticamente el `Dockerfile`
 
-### 4.2. Configurar Variables de Entorno
+### 4.2. Conectar Servicio con Base de Datos MySQL
 
-En Railway, ve a **Variables** y agrega:
+**IMPORTANTE:** Primero debes conectar tu servicio Laravel con el servicio MySQL en Railway:
+
+1. En tu **servicio Laravel**, ve a **Settings** → **Connect**
+2. Selecciona tu servicio **MySQL** 
+3. Railway creará automáticamente las variables de referencia
+
+### 4.3. Configurar Variables de Entorno
+
+En Railway, ve a **Variables** y agrega (usando referencias al servicio MySQL):
 
 ```env
 APP_NAME=Bóveda de Documentos
@@ -88,13 +96,13 @@ APP_KEY=base64:LwGnW0D5lA+bGqFCfHpQjtX8OZ/Ki5FYO5YROxCCiPI=
 APP_DEBUG=false
 APP_URL=https://tu-app.up.railway.app
 
-# Base de datos (usando variables de Railway)
+# Base de datos (REFERENCIAS al servicio MySQL)
 DB_CONNECTION=mysql
-DB_HOST=mysql.railway.internal
-DB_PORT=3306
-DB_DATABASE=railway
-DB_USERNAME=root
-DB_PASSWORD=GMsdYupELuMERfdRWvkWixfZQNQzVKsc
+DB_HOST=${{MySQL.MYSQL_PRIVATE_URL}}
+DB_PORT=${{MySQL.MYSQL_PORT}}
+DB_DATABASE=${{MySQL.MYSQL_DATABASE}}
+DB_USERNAME=${{MySQL.MYSQL_USER}}
+DB_PASSWORD=${{MySQL.MYSQL_PASSWORD}}
 
 # Logging
 LOG_CHANNEL=stack
@@ -111,21 +119,25 @@ QUEUE_CONNECTION=database
 FILESYSTEM_DISK=local
 ```
 
-**💡 Tip:** Railway también permite usar referencias de variables:
-```env
-DB_PASSWORD=${{MySQL.MYSQL_ROOT_PASSWORD}}
-```
+**💡 Beneficios de usar referencias:**
+- ✅ Conexión automática entre servicios
+- ✅ Si cambias la contraseña de MySQL, se actualiza automáticamente
+- ✅ Usa la red privada de Railway (más rápido y seguro)
+- ✅ No necesitas copiar/pegar credenciales manualmente
 
-### 4.3. Configurar Networking
+### 4.4. Configurar Networking
 
 1. En tu servicio Laravel, ve a **Settings**
 2. En **Networking**, click en **"Generate Domain"**
 3. Obtendrás una URL como: `https://tu-proyecto.up.railway.app`
 4. **Actualiza `APP_URL`** en variables de entorno con esta URL
 
-### 4.4. Conectar con MySQL
+### 4.5. Verificar Conexión
 
-Railway conectará automáticamente tu servicio con MySQL usando la **red privada** (`mysql.railway.internal`).
+Railway conectará automáticamente tu servicio con MySQL usando:
+- **Red privada** (más rápido y seguro)
+- **Variables compartidas** (sincronización automática)
+- El host será `mysql.railway.internal` automáticamente
 
 ---
 
