@@ -51,7 +51,9 @@ RUN sed -i 's/80/${PORT}/g' /etc/apache2/sites-available/000-default.conf /etc/a
 # Crear script de inicio
 RUN echo '#!/bin/bash\n\
 echo "🚀 Iniciando aplicación..."\n\
-echo "📝 Generando cache de configuración..."\n\
+echo "�️  Ejecutando migraciones..."\n\
+php artisan migrate --force\n\
+echo "�📝 Generando cache de configuración..."\n\
 php artisan config:cache\n\
 echo "🛣️  Generando cache de rutas..."\n\
 php artisan route:cache\n\
