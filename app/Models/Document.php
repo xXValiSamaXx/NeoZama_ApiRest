@@ -27,6 +27,9 @@ class Document extends Model
 
     protected $casts = [
         'is_public' => 'boolean',
+        'file_size' => 'integer',
+    ];
+
     /**
      * Usuarios con los que se ha compartido este documento
      */
