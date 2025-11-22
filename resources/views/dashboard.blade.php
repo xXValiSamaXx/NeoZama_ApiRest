@@ -61,6 +61,10 @@
                             <div class="ml-4">
                                 <div class="text-sm font-medium text-indigo-600 truncate">{{ $doc->title }}</div>
                                 <div class="flex items-center text-sm text-gray-500">
+                                    @if(Auth::user()->isAdmin())
+                                        <span class="font-semibold text-gray-700 mr-1">{{ $doc->user->name }}</span>
+                                        <span class="mx-1">&bull;</span>
+                                    @endif
                                     <span class="truncate">{{ $doc->category->name ?? 'Sin Categoría' }}</span>
                                     <span class="mx-1">&bull;</span>
                                     <span>{{ $doc->created_at->diffForHumans() }}</span>

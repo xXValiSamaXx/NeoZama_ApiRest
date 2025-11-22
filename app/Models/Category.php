@@ -14,19 +14,27 @@ class Category extends Model
     protected $fillable = [
         'name',
         'description',
-        'user_id',
-    ];
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
+class Category extends Model
+{
+    /** @use HasFactory<\Database\Factories\CategoryFactory> */
+    use HasFactory;
+
+    // REQUISITO: "Creación de modelos para interactuar con la bd".
+    // $fillable protege contra asignación masiva de datos.
+    protected $fillable = ['name', 'description', 'user_id'];
 
     /**
-     * Usuario propietario de la categoría
-     */
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
-
-    /**
-     * Documentos en esta categoría
+     * Relación Maestro-Detalle (Uno a Muchos).
+     * Una Categoría tiene muchos Documentos.
      */
     public function documents(): HasMany
     {

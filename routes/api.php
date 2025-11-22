@@ -15,12 +15,16 @@ use Illuminate\Support\Facades\Route;
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
-// Rutas protegidas con Sanctum
+// REQUISITO: "Sistema de seguridad básico... uso de un complemento como sanctum".
+// El middleware 'auth:sanctum' protege todas las rutas dentro de este grupo.
 Route::middleware('auth:sanctum')->group(function () {
     
     // Autenticación
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/user', [AuthController::class, 'user']);
+    
+    // REQUISITO: "Uso de rutas... creación de una API para una tabla".
+    // apiResource crea automáticamente las rutas: index, store, show, update, destroy.
     
     // Categorías
     Route::apiResource('categories', CategoryController::class);

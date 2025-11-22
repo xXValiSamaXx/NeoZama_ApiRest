@@ -14,10 +14,16 @@ class WebController extends Controller
     {
         /** @var \App\Models\User $user */
         $user = Auth::user();
-        
-        $documentsCount = $user->documents()->count();
-        $categoriesCount = $user->categories()->count();
-        $recentDocuments = $user->documents()->with('category')->latest()->take(5)->get();
+
+        if ($user->isAdmin()) {
+            $documentsCount = Document::count();
+            $categoriesCount = Category::count();
+            $recentDocuments = Document::with(['category', 'user'])->latest()->take(5)->get();
+        } else {
+            $documentsCount = $user->documents()->count();
+            $categoriesCount = $user->categories()->count();
+            $recentDocuments = $user->documents()->with('category')->latest()->take(5)->get();
+        }
 
         return view('dashboard', compact('documentsCount', 'categoriesCount', 'recentDocuments'));
     }
@@ -26,7 +32,12 @@ class WebController extends Controller
     {
         /** @var \App\Models\User $user */
         $user = Auth::user();
-        $documents = $user->documents()->with('category')->latest()->paginate(10);
+
+        if ($user->isAdmin()) {
+            $documents = Document::with(['category', 'user'])->latest()->paginate(10);
+        } else {
+            $documents = $user->documents()->with('category')->latest()->paginate(10);
+        }
 
         return view('documents.index', compact('documents'));
     }

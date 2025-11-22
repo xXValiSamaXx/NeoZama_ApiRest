@@ -39,8 +39,16 @@ class DocumentController extends Controller
      *     )
      * )
      */
+    /**
+     * Listar documentos (Operación READ del CRUD).
+     * 
+     * REQUISITO: "Vistas de consulta o filtrado".
+     * Este método permite filtrar por categoría y buscar por título.
+     */
     public function index(Request $request): JsonResponse
     {
+        // REQUISITO: Uso de Eloquent ORM para interactuar con la BD.
+        // 'with' optimiza la consulta trayendo las relaciones (Eager Loading).
         $query = Document::where('user_id', $request->user()->id)
             ->with(['category', 'user']);
 
@@ -83,12 +91,21 @@ class DocumentController extends Controller
      *     @OA\Response(response=422, description="Error de validación")
      * )
      */
+    /**
+     * Guardar nuevo documento (Operación CREATE del CRUD).
+     * 
+     * REQUISITO: "Uso de controladores para reglas del negocio".
+     * Aquí validamos y guardamos el archivo físico y el registro en BD.
+     */
     public function store(StoreDocumentRequest $request): JsonResponse
     {
         $file = $request->file('file');
+        // Generamos un nombre único para evitar colisiones
         $filename = Str::uuid() . '.' . $file->getClientOriginalExtension();
+        // Guardamos el archivo en el disco 'private'
         $path = $file->storeAs('documents', $filename, 'private');
 
+        // REQUISITO: Creación de registros mediante el Modelo.
         $document = Document::create([
             'title' => $request->title,
             'description' => $request->description,
@@ -97,8 +114,8 @@ class DocumentController extends Controller
             'mime_type' => $file->getMimeType(),
             'file_size' => $file->getSize(),
             'file_path' => $path,
-            'category_id' => $request->category_id,
-            'user_id' => $request->user()->id,
+            'category_id' => $request->category_id, // Relación con Categoría
+            'user_id' => $request->user()->id,      // Relación con Usuario
             'is_public' => $request->boolean('is_public', false),
         ]);
 
@@ -190,8 +207,13 @@ class DocumentController extends Controller
      *     @OA\Response(response=403, description="No autorizado")
      * )
      */
+    /**
+     * Actualizar documento (Operación UPDATE del CRUD).
+     */
     public function update(UpdateDocumentRequest $request, Document $document): JsonResponse
     {
+        // REQUISITO: Seguridad (Autorización).
+        // Verificamos que el usuario sea el dueño del documento.
         if ($document->user_id !== $request->user()->id) {
             return response()->json(['message' => 'No autorizado'], 403);
         }
@@ -205,30 +227,19 @@ class DocumentController extends Controller
     }
 
     /**
-     * @OA\Delete(
-     *     path="/api/documents/{id}",
-     *     tags={"Documentos"},
-     *     summary="Eliminar un documento",
-     *     security={{"bearerAuth":{}}},
-     *     @OA\Parameter(
-     *         name="id",
-     *         in="path",
-     *         required=true,
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\Response(response=200, description="Documento eliminado"),
-     *     @OA\Response(response=403, description="No autorizado")
-     * )
+     * Eliminar documento (Operación DELETE del CRUD).
      */
     public function destroy(Request $request, Document $document): JsonResponse
     {
+        // REQUISITO: Seguridad. Solo el dueño puede borrar.
         if ($document->user_id !== $request->user()->id) {
             return response()->json(['message' => 'No autorizado'], 403);
         }
 
-        // Eliminar archivo físico
+        // Eliminar archivo físico del almacenamiento
         Storage::disk('private')->delete($document->file_path);
 
+        // Eliminar registro de la base de datos (Soft Delete si está configurado)
         $document->delete();
 
         return response()->json([

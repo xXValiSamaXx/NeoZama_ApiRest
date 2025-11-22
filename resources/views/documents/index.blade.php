@@ -3,12 +3,16 @@
 @section('content')
 <div class="space-y-6">
     <div class="sm:flex sm:items-center sm:justify-between">
-        <h1 class="text-2xl font-bold text-gray-900">Mis Documentos</h1>
-        <div class="mt-4 sm:mt-0">
-            <button type="button" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                Subir Documento
-            </button>
-        </div>
+        <h1 class="text-2xl font-bold text-gray-900">
+            {{ Auth::user()->isAdmin() ? 'Todos los Documentos' : 'Mis Documentos' }}
+        </h1>
+        @if(!Auth::user()->isAdmin())
+            <div class="mt-4 sm:mt-0">
+                <button type="button" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Subir Documento
+                </button>
+            </div>
+        @endif
     </div>
 
     <div class="bg-white shadow overflow-hidden sm:rounded-md">
@@ -28,6 +32,10 @@
                                 <div>
                                     <p class="text-sm font-medium text-indigo-600 truncate">{{ $doc->title }}</p>
                                     <p class="mt-1 flex items-center text-sm text-gray-500">
+                                        @if(Auth::user()->isAdmin())
+                                            <span class="font-semibold text-gray-700 mr-1">{{ $doc->user->name }}</span>
+                                            <span class="mx-1">&bull;</span>
+                                        @endif
                                         <span class="truncate">{{ $doc->original_filename }}</span>
                                     </p>
                                 </div>
@@ -47,9 +55,11 @@
                             <a href="#" class="inline-flex items-center px-3 py-1.5 border border-gray-300 shadow-sm text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50">
                                 Descargar
                             </a>
-                            <a href="#" class="inline-flex items-center px-3 py-1.5 border border-transparent shadow-sm text-xs font-medium rounded text-white bg-red-600 hover:bg-red-700">
-                                Eliminar
-                            </a>
+                            @if(!Auth::user()->isAdmin())
+                                <a href="#" class="inline-flex items-center px-3 py-1.5 border border-transparent shadow-sm text-xs font-medium rounded text-white bg-red-600 hover:bg-red-700">
+                                    Eliminar
+                                </a>
+                            @endif
                         </div>
                     </div>
                 </li>

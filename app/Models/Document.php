@@ -27,25 +27,6 @@ class Document extends Model
 
     protected $casts = [
         'is_public' => 'boolean',
-        'file_size' => 'integer',
-    ];
-
-    /**
-     * Usuario propietario del documento
-     */
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
-
-    /**
-     * Categoría del documento
-     */
-    public function category(): BelongsTo
-    {
-        return $this->belongsTo(Category::class);
-    }
-
     /**
      * Usuarios con los que se ha compartido este documento
      */

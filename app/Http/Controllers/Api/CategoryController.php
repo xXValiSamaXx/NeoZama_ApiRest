@@ -23,8 +23,16 @@ class CategoryController extends Controller
      *     )
      * )
      */
+    /**
+     * Listar categorías (Operación READ del CRUD).
+     * 
+     * REQUISITO: "Relación Maestro-Detalle".
+     * Aquí obtenemos las categorías (Maestro) y contamos sus documentos (Detalle).
+     */
     public function index(Request $request): JsonResponse
     {
+        // REQUISITO: Uso de Eloquent ORM.
+        // 'withCount' es una función de Eloquent para contar relaciones sin traer todos los datos.
         $categories = Category::where('user_id', $request->user()->id)
             ->withCount('documents')
             ->get();
