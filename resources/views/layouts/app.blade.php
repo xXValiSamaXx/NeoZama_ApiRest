@@ -21,17 +21,19 @@
                             <span class="text-xl font-bold text-indigo-600">BóvedaDocs</span>
                         </div>
                         <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
-                            <a href="{{ route('dashboard') }}" class="{{ request()->routeIs('dashboard') ? 'border-indigo-500 text-gray-900' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700' }} inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
-                                Dashboard
-                            </a>
-                            <a href="{{ route('documents.index') }}" class="{{ request()->routeIs('documents.*') ? 'border-indigo-500 text-gray-900' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700' }} inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
-                                Documentos
-                            </a>
-                            @if(Auth::user()->isAdmin())
-                                <a href="{{ url('/api/documentation') }}" target="_blank" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
-                                    API Docs
+                            @auth
+                                <a href="{{ route('dashboard') }}" class="{{ request()->routeIs('dashboard') ? 'border-indigo-500 text-gray-900' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700' }} inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                                    Dashboard
                                 </a>
-                            @endif
+                                <a href="{{ route('documents.index') }}" class="{{ request()->routeIs('documents.*') ? 'border-indigo-500 text-gray-900' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700' }} inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                                    Documentos
+                                </a>
+                                @if(Auth::user()->isAdmin())
+                                    <a href="{{ url('/api/documentation') }}" target="_blank" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                                        API Docs
+                                    </a>
+                                @endif
+                            @endauth
                         </div>
                     </div>
                     <div class="flex items-center">
