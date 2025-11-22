@@ -38,15 +38,22 @@ class DemoSeeder extends Seeder
             ]);
         });
 
-        // 4. Crear Categorías y Documentos para Test User
-        Category::factory(5)->create(['user_id' => $user->id])->each(function ($category) use ($user) {
-            Document::factory(3)->create([
-                'category_id' => $category->id,
+        // 4. Crear Categorías por defecto para el usuario de prueba
+        $defaultCategories = [
+            'INE' => 'Credencial para votar',
+            'CURP' => 'Clave Única de Registro de Población',
+            'Acta de Nacimiento' => 'Documento de identidad',
+            'RFC' => 'Registro Federal de Contribuyentes',
+            'Comprobante de Domicilio' => 'Luz, Agua o Teléfono',
+        ];
+
+        foreach ($defaultCategories as $name => $description) {
+            Category::factory()->create([
+                'name' => $name,
+                'description' => $description,
                 'user_id' => $user->id,
             ]);
-        });
-
-        // 5. Crear algunos documentos sin categoría
+        }
         Document::factory(2)->create([
             'category_id' => null,
             'user_id' => $user->id,
