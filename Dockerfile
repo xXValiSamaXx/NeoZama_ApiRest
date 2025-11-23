@@ -38,6 +38,9 @@ RUN a2enmod rewrite headers
 # Copiar configuración de Apache
 COPY docker/apache/000-default.conf /etc/apache2/sites-available/000-default.conf
 
+# Copiar configuración de PHP personalizada
+COPY docker/production/php.ini /usr/local/etc/php/conf.d/custom.ini
+
 # Exponer puerto
 EXPOSE 8080
 
