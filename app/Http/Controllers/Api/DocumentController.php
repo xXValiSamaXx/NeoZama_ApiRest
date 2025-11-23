@@ -99,30 +99,38 @@ class DocumentController extends Controller
      */
     public function store(StoreDocumentRequest $request): JsonResponse
     {
-        $file = $request->file('file');
-        // Generamos un nombre único para evitar colisiones
-        $filename = Str::uuid() . '.' . $file->getClientOriginalExtension();
-        // Guardamos el archivo en el disco 'private'
-        $path = $file->storeAs('documents', $filename, 'private');
+        try {
+            $file = $request->file('file');
+            // Generamos un nombre único para evitar colisiones
+            $filename = Str::uuid() . '.' . $file->getClientOriginalExtension();
+            // Guardamos el archivo en el disco 'private'
+            $path = $file->storeAs('documents', $filename, 'private');
 
-        // REQUISITO: Creación de registros mediante el Modelo.
-        $document = Document::create([
-            'title' => $request->title,
-            'description' => $request->description,
-            'filename' => $filename,
-            'original_filename' => $file->getClientOriginalName(),
-            'mime_type' => $file->getMimeType(),
-            'file_size' => $file->getSize(),
-            'file_path' => $path,
-            'category_id' => $request->category_id, // Relación con Categoría
-            'user_id' => $request->user()->id,      // Relación con Usuario
-            'is_public' => $request->boolean('is_public', false),
-        ]);
+            // REQUISITO: Creación de registros mediante el Modelo.
+            $document = Document::create([
+                'title' => $request->title,
+                'description' => $request->description,
+                'filename' => $filename,
+                'original_filename' => $file->getClientOriginalName(),
+                'mime_type' => $file->getMimeType(),
+                'file_size' => $file->getSize(),
+                'file_path' => $path,
+                'category_id' => $request->category_id, // Relación con Categoría
+                'user_id' => $request->user()->id,      // Relación con Usuario
+                'is_public' => $request->boolean('is_public', false),
+            ]);
 
-        return response()->json([
-            'message' => 'Documento subido exitosamente',
-            'document' => $document->load('category'),
-        ], 201);
+            return response()->json([
+                'message' => 'Documento subido exitosamente',
+                'document' => $document->load('category'),
+            ], 201);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error interno al subir el documento',
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ], 500);
+        }
     }
 
     /**
