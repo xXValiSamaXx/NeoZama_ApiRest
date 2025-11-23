@@ -14,7 +14,7 @@ class Category extends Model
 
     // REQUISITO: "Creación de modelos para interactuar con la bd".
     // $fillable protege contra asignación masiva de datos.
-    protected $fillable = ['name', 'description', 'user_id'];
+    protected $fillable = ['name', 'description'];
 
     /**
      * Relación Maestro-Detalle (Uno a Muchos).

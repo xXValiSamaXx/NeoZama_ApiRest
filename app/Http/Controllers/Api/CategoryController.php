@@ -28,14 +28,14 @@ class CategoryController extends Controller
      * 
      * REQUISITO: "Relación Maestro-Detalle".
      * Aquí obtenemos las categorías (Maestro) y contamos sus documentos (Detalle).
+     * 
+     * Categorías son globales, todos los usuarios pueden verlas.
      */
     public function index(Request $request): JsonResponse
     {
         // REQUISITO: Uso de Eloquent ORM.
         // 'withCount' es una función de Eloquent para contar relaciones sin traer todos los datos.
-        $categories = Category::where('user_id', $request->user()->id)
-            ->withCount('documents')
-            ->get();
+        $categories = Category::withCount('documents')->get();
 
         return response()->json($categories);
     }
@@ -60,10 +60,14 @@ class CategoryController extends Controller
      */
     public function store(StoreCategoryRequest $request): JsonResponse
     {
+        // Solo el admin puede crear categorías
+        if (!$request->user()->isAdmin()) {
+            return response()->json(['message' => 'No autorizado'], 403);
+        }
+
         $category = Category::create([
             'name' => $request->name,
             'description' => $request->description,
-            'user_id' => $request->user()->id,
         ]);
 
         return response()->json([
@@ -90,10 +94,6 @@ class CategoryController extends Controller
      */
     public function show(Request $request, Category $category): JsonResponse
     {
-        if ($category->user_id !== $request->user()->id) {
-            return response()->json(['message' => 'No autorizado'], 403);
-        }
-
         $category->load('documents');
 
         return response()->json($category);
@@ -124,7 +124,8 @@ class CategoryController extends Controller
      */
     public function update(StoreCategoryRequest $request, Category $category): JsonResponse
     {
-        if ($category->user_id !== $request->user()->id) {
+        // Solo el admin puede actualizar categorías
+        if (!$request->user()->isAdmin()) {
             return response()->json(['message' => 'No autorizado'], 403);
         }
 
@@ -154,7 +155,8 @@ class CategoryController extends Controller
      */
     public function destroy(Request $request, Category $category): JsonResponse
     {
-        if ($category->user_id !== $request->user()->id) {
+        // Solo el admin puede eliminar categorías
+        if (!$request->user()->isAdmin()) {
             return response()->json(['message' => 'No autorizado'], 403);
         }
 

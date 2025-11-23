@@ -30,30 +30,19 @@ class DemoSeeder extends Seeder
             'password' => Hash::make('password123'),
         ]);
 
-        // 3. Crear Categorías y Documentos para Admin
-        Category::factory(5)->create(['user_id' => $admin->id])->each(function ($category) use ($admin) {
-            Document::factory(3)->create([
+        // 3. Crear Categorías Globales
+        $this->call(GlobalCategoriesSeeder::class);
+
+        // 4. Crear algunos documentos de ejemplo para el usuario de prueba
+        $categories = Category::all();
+        foreach ($categories->take(2) as $category) {
+            Document::factory(2)->create([
                 'category_id' => $category->id,
-                'user_id' => $admin->id,
-            ]);
-        });
-
-        // 4. Crear Categorías por defecto para el usuario de prueba
-        $defaultCategories = [
-            'INE' => 'Credencial para votar',
-            'CURP' => 'Clave Única de Registro de Población',
-            'Acta de Nacimiento' => 'Documento de identidad',
-            'RFC' => 'Registro Federal de Contribuyentes',
-            'Comprobante de Domicilio' => 'Luz, Agua o Teléfono',
-        ];
-
-        foreach ($defaultCategories as $name => $description) {
-            Category::factory()->create([
-                'name' => $name,
-                'description' => $description,
                 'user_id' => $user->id,
             ]);
         }
+
+        // 5. Crear algunos documentos sin categoría
         Document::factory(2)->create([
             'category_id' => null,
             'user_id' => $user->id,
@@ -61,8 +50,8 @@ class DemoSeeder extends Seeder
 
         $this->command->info('✅ Datos de prueba generados exitosamente');
         $this->command->info('   - 2 Usuarios (admin, test)');
-        $this->command->info('   - 10 Categorías');
-        $this->command->info('   - ~32 Documentos');
+        $this->command->info('   - 4 Categorías Globales');
+        $this->command->info('   - ~6 Documentos');
         $this->command->info('');
         $this->command->info('📧 Credenciales:');
         $this->command->info('   Admin: admin@bovedadocumentos.com / password123');

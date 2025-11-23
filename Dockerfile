@@ -50,20 +50,18 @@ RUN sed -i 's/80/${PORT}/g' /etc/apache2/sites-available/000-default.conf /etc/a
 
 # Crear script de inicio
 RUN echo '#!/bin/bash\n\
-echo "🚀 Iniciando aplicación..."\n\
-echo "�️  Ejecutando migraciones..."\n\
-php artisan migrate --force\n\
-echo "�📝 Generando cache de configuración..."\n\
-php artisan config:cache\n\
-echo "🛣️  Generando cache de rutas..."\n\
-php artisan route:cache\n\
-echo "👁️  Generando cache de vistas..."\n\
-php artisan view:cache\n\
-echo "📚 Generando documentación Swagger..."\n\
-php artisan l5-swagger:generate\n\
-echo "✅ Aplicación lista!"\n\
-echo "🌐 Swagger UI disponible en: /api/documentation"\n\
-apache2-foreground' > /usr/local/bin/start.sh \
+    echo "🚀 Iniciando aplicación..."\n\
+    echo "⚙️  Ejecutando migraciones..."\n\
+    php artisan migrate --force\n\
+    echo "📝 Generando cache de configuración..."\n\
+    php artisan config:cache\n\
+    echo "👁️  Generando cache de vistas..."\n\
+    php artisan view:cache\n\
+    echo "📚 Generando documentación Swagger..."\n\
+    php artisan l5-swagger:generate\n\
+    echo "✅ Aplicación lista!"\n\
+    echo "🌐 Swagger UI disponible en: /api/documentation"\n\
+    apache2-foreground' > /usr/local/bin/start.sh \
     && chmod +x /usr/local/bin/start.sh
 
 # Comando de inicio
