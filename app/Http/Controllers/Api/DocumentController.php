@@ -106,24 +106,55 @@ class DocumentController extends Controller
             // Guardamos el archivo en el disco 'private'
             $path = $file->storeAs('documents', $filename, 'private');
 
-            // REQUISITO: Creación de registros mediante el Modelo.
-            $document = Document::create([
-                'title' => $request->title,
-                'description' => $request->description,
-                'filename' => $filename,
-                'original_filename' => $file->getClientOriginalName(),
-                'mime_type' => $file->getMimeType(),
-                'file_size' => $file->getSize(),
-                'file_path' => $path,
-                'category_id' => $request->category_id, // Relación con Categoría
-                'user_id' => $request->user()->id,      // Relación con Usuario
-                'is_public' => $request->boolean('is_public', false),
-            ]);
+            // REQUISITO: "Solo puedo subir 4 archivos por categoria".
+            // Buscamos si ya existe un documento para esta categoría y usuario.
+            $existingDocument = Document::where('user_id', $request->user()->id)
+                ->where('category_id', $request->category_id)
+                ->first();
+
+            if ($existingDocument) {
+                // Si existe, eliminamos el archivo anterior
+                if (Storage::disk('private')->exists($existingDocument->file_path)) {
+                    Storage::disk('private')->delete($existingDocument->file_path);
+                }
+
+                // Actualizamos el registro existente
+                $existingDocument->update([
+                    'title' => $request->title,
+                    'description' => $request->description,
+                    'filename' => $filename,
+                    'original_filename' => $file->getClientOriginalName(),
+                    'mime_type' => $file->getMimeType(),
+                    'file_size' => $file->getSize(),
+                    'file_path' => $path,
+                    'is_public' => $request->boolean('is_public', false),
+                ]);
+
+                $document = $existingDocument;
+                $status = 200; // OK (Actualizado)
+                $message = 'Documento actualizado exitosamente';
+            } else {
+                // Si no existe, creamos uno nuevo
+                $document = Document::create([
+                    'title' => $request->title,
+                    'description' => $request->description,
+                    'filename' => $filename,
+                    'original_filename' => $file->getClientOriginalName(),
+                    'mime_type' => $file->getMimeType(),
+                    'file_size' => $file->getSize(),
+                    'file_path' => $path,
+                    'category_id' => $request->category_id, // Relación con Categoría
+                    'user_id' => $request->user()->id,      // Relación con Usuario
+                    'is_public' => $request->boolean('is_public', false),
+                ]);
+                $status = 201; // Created
+                $message = 'Documento subido exitosamente';
+            }
 
             return response()->json([
-                'message' => 'Documento subido exitosamente',
+                'message' => $message,
                 'document' => $document->load('category'),
-            ], 201);
+            ], $status);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Error: ' . $e->getMessage(),
