@@ -126,7 +126,7 @@ class DocumentController extends Controller
             ], 201);
         } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Error interno al subir el documento',
+                'message' => 'Error: ' . $e->getMessage(),
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ], 500);
