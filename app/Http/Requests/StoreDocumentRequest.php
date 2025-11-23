@@ -28,6 +28,7 @@ class StoreDocumentRequest extends FormRequest
             'title.required' => 'El título del documento es obligatorio.',
             'file.required' => 'Debe seleccionar un archivo.',
             'file.max' => 'El archivo no debe superar los 10MB.',
+            'file.uploaded' => 'El archivo falló al subirse. Posiblemente exceda el tamaño máximo permitido por el servidor (upload_max_filesize).',
             'category_id.exists' => 'La categoría seleccionada no existe.',
         ];
     }
