@@ -31,6 +31,22 @@ class Document extends Model
     ];
 
     /**
+     * Relación con la categoría
+     */
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(Category::class);
+    }
+
+    /**
+     * Relación con el usuario propietario
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    /**
      * Usuarios con los que se ha compartido este documento
      */
     public function sharedWith(): BelongsToMany
@@ -66,11 +82,11 @@ class Document extends Model
     {
         $bytes = $this->file_size;
         $units = ['B', 'KB', 'MB', 'GB', 'TB'];
-        
+
         for ($i = 0; $bytes > 1024; $i++) {
             $bytes /= 1024;
         }
-        
+
         return round($bytes, 2) . ' ' . $units[$i];
     }
 }
