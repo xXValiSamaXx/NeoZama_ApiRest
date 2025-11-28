@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\Api\AccessRequestController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\DependencyController;
 use App\Http\Controllers\Api\DocumentController;
 use Illuminate\Support\Facades\Route;
 
@@ -43,4 +45,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/documents/{document}/download', [DocumentController::class, 'download']);
     Route::post('/documents/{document}/share', [DocumentController::class, 'share']);
     Route::apiResource('documents', DocumentController::class);
+
+    // Dependencies
+    Route::apiResource('dependencies', DependencyController::class);
+
+    // Access Requests
+    Route::get('access-requests', [AccessRequestController::class, 'index']);
+    Route::post('access-requests', [AccessRequestController::class, 'store']);
+    Route::put('access-requests/{accessRequest}/status', [AccessRequestController::class, 'updateStatus']);
 });

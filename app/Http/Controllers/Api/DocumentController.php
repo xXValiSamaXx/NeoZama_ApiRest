@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreDocumentRequest;
 use App\Http\Requests\UpdateDocumentRequest;
 use App\Models\Document;
+use App\Models\DocumentAccessLog;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -50,11 +51,13 @@ class DocumentController extends Controller
         // REQUISITO: Uso de Eloquent ORM para interactuar con la BD.
         // 'with' optimiza la consulta trayendo las relaciones (Eager Loading).
         $query = Document::where('user_id', $request->user()->id)
-            ->with(['category', 'user']);
+            ->with(['categories', 'user']);
 
-        // Filtrar por categoría
+        // Filtrar por categoría (updated for many-to-many)
         if ($request->has('category_id')) {
-            $query->where('category_id', $request->category_id);
+            $query->whereHas('categories', function ($q) use ($request) {
+                $q->where('categories.id', $request->category_id);
+            });
         }
 
         // Buscar por título
@@ -131,6 +134,11 @@ class DocumentController extends Controller
                 ]);
 
                 $document = $existingDocument;
+                // Sync categories if category_id is present (backward compatibility input)
+                if ($request->has('category_id')) {
+                    $document->categories()->sync([$request->category_id]);
+                }
+
                 $status = 200; // OK (Actualizado)
                 $message = 'Documento actualizado exitosamente';
             } else {
@@ -143,17 +151,22 @@ class DocumentController extends Controller
                     'mime_type' => $file->getMimeType(),
                     'file_size' => $file->getSize(),
                     'file_path' => $path,
-                    'category_id' => $request->category_id, // Relación con Categoría
+                    // 'category_id' => $request->category_id, // Removed
                     'user_id' => $request->user()->id,      // Relación con Usuario
                     'is_public' => $request->boolean('is_public', false),
                 ]);
+
+                if ($request->has('category_id')) {
+                    $document->categories()->attach($request->category_id);
+                }
+
                 $status = 201; // Created
                 $message = 'Documento subido exitosamente';
             }
 
             return response()->json([
                 'message' => $message,
-                'document' => $document->load('category'),
+                'document' => $document->load('categories'),
             ], $status);
         } catch (\Exception $e) {
             return response()->json([
@@ -187,7 +200,15 @@ class DocumentController extends Controller
             return response()->json(['message' => 'No autorizado'], 403);
         }
 
-        $document->load(['category', 'user', 'sharedWith']);
+        // Log access
+        DocumentAccessLog::create([
+            'document_id' => $document->id,
+            'user_id' => $request->user()->id,
+            'dependency_id' => $request->user()->dependency_id,
+            'action' => 'view',
+        ]);
+
+        $document->load(['categories', 'user', 'sharedWith']);
 
         return response()->json($document);
     }
@@ -214,6 +235,14 @@ class DocumentController extends Controller
         if (!$document->canAccess($request->user())) {
             abort(403, 'No autorizado');
         }
+
+        // Log access
+        DocumentAccessLog::create([
+            'document_id' => $document->id,
+            'user_id' => $request->user()->id,
+            'dependency_id' => $request->user()->dependency_id,
+            'action' => 'download',
+        ]);
 
         return Storage::disk('private')->download(
             $document->file_path,
@@ -259,9 +288,13 @@ class DocumentController extends Controller
 
         $document->update($request->validated());
 
+        if ($request->has('category_id')) {
+            $document->categories()->sync([$request->category_id]);
+        }
+
         return response()->json([
             'message' => 'Documento actualizado exitosamente',
-            'document' => $document->load('category'),
+            'document' => $document->load('categories'),
         ]);
     }
 
@@ -346,7 +379,7 @@ class DocumentController extends Controller
     {
         $documents = $request->user()
             ->sharedDocuments()
-            ->with(['category', 'user'])
+            ->with(['categories', 'user'])
             ->get();
 
         return response()->json($documents);

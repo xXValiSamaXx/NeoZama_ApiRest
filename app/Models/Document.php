@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Document extends Model
@@ -20,7 +22,7 @@ class Document extends Model
         'mime_type',
         'file_size',
         'file_path',
-        'category_id',
+        // 'category_id', // Removed in migration
         'user_id',
         'is_public',
     ];
@@ -31,11 +33,11 @@ class Document extends Model
     ];
 
     /**
-     * Relación con la categoría
+     * Relación con las categorías (Muchos a Muchos)
      */
-    public function category(): BelongsTo
+    public function categories(): BelongsToMany
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsToMany(Category::class, 'category_document');
     }
 
     /**
@@ -71,8 +73,42 @@ class Document extends Model
             return true;
         }
 
-        // Verificar si está compartido con el usuario
-        return $this->sharedWith()->where('shared_with_user_id', $user->id)->exists();
+        // Verificar si está compartido con el usuario directamente
+        if ($this->sharedWith()->where('shared_with_user_id', $user->id)->exists()) {
+            return true;
+        }
+
+        // Verificar permisos de dependencia
+        if ($user->dependency_id) {
+            // Permiso específico para este documento
+            $hasDocPermission = DependencyPermission::where('dependency_id', $user->dependency_id)
+                ->where('permissionable_type', Document::class)
+                ->where('permissionable_id', $this->id)
+                ->exists();
+
+            if ($hasDocPermission) return true;
+
+            // Permiso por categoría
+            // Obtener IDs de categorías de este documento
+            $categoryIds = $this->categories()->pluck('categories.id');
+
+            $hasCategoryPermission = DependencyPermission::where('dependency_id', $user->dependency_id)
+                ->where('permissionable_type', Category::class)
+                ->whereIn('permissionable_id', $categoryIds)
+                ->exists();
+
+            if ($hasCategoryPermission) return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Access Logs for this document
+     */
+    public function accessLogs(): HasMany
+    {
+        return $this->hasMany(DocumentAccessLog::class);
     }
 
     /**
