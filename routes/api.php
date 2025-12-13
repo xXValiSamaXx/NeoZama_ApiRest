@@ -40,7 +40,13 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Documentos
     Route::get('/documents/shared', [DocumentController::class, 'shared']);
+    // Special route for audit-logged viewing
+    Route::get('/documents/{document}/secure-view', [\App\Http\Controllers\Api\DocumentAccessController::class, 'show']);
     Route::get('/documents/{document}/download', [DocumentController::class, 'download']);
     Route::post('/documents/{document}/share', [DocumentController::class, 'share']);
     Route::apiResource('documents', DocumentController::class);
+
+    // Solicitudes de Acceso (Dependencies)
+    Route::apiResource('access-requests', \App\Http\Controllers\Api\AccessRequestController::class)
+        ->only(['index', 'store', 'update']);
 });

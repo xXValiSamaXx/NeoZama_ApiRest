@@ -50,12 +50,41 @@ class User extends Authenticatable
         ];
     }
 
+    // Role Constants
+    const ROLE_USER = 'user';
+    const ROLE_ADMIN = 'admin';
+    const ROLE_DEPENDENCY = 'dependency';
+
     /**
      * Check if user is admin
      */
     public function isAdmin(): bool
     {
-        return $this->is_admin;
+        return $this->role === self::ROLE_ADMIN || $this->is_admin;
+    }
+
+    /**
+     * Check if user is dependency
+     */
+    public function isDependency(): bool
+    {
+        return $this->role === self::ROLE_DEPENDENCY;
+    }
+
+    /**
+     * Solicitudes de acceso enviadas (si es dependencia)
+     */
+    public function accessRequestsSent(): HasMany
+    {
+        return $this->hasMany(AccessRequest::class, 'dependency_id');
+    }
+
+    /**
+     * Solicitudes de acceso recibidas (si es dueño de documento)
+     */
+    public function accessRequestsReceived(): HasMany
+    {
+        return $this->hasMany(AccessRequest::class, 'user_id');
     }
 
     /**

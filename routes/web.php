@@ -20,4 +20,19 @@ Route::post('/logout', [AuthController::class, 'logoutWeb'])->name('logout');
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/dashboard', [WebController::class, 'dashboard'])->name('dashboard');
     Route::get('/documents', [WebController::class, 'documents'])->name('documents.index');
+    Route::resource('categories', \App\Http\Controllers\Web\CategoryController::class);
+
+    // Access Requests
+    Route::get('/access-requests', [\App\Http\Controllers\Web\AccessRequestController::class, 'index'])->name('web.access-requests.index');
+    Route::get('/access-requests/create', [\App\Http\Controllers\Web\AccessRequestController::class, 'create'])->name('web.access-requests.create');
+    Route::post('/access-requests', [\App\Http\Controllers\Web\AccessRequestController::class, 'store'])->name('web.access-requests.store');
+    Route::put('/access-requests/{accessRequest}', [\App\Http\Controllers\Web\AccessRequestController::class, 'update'])->name('web.access-requests.update');
+
+    // Secure Document User View (for Dependencies)
+    Route::get('/documents/{document}/secure-view', function (\App\Models\Document $document) {
+        // Simple closure or controller method. Let's do a closure for the VIEW, logic in Controller is for API.
+        // Actually, let's reuse a Web Controller method for this View-UI.
+        // Defining a dedicated method in WebController is cleaner.
+        return App::call([\App\Http\Controllers\Web\AccessRequestController::class, 'secureView'], ['document' => $document]);
+    });
 });
