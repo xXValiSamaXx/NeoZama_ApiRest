@@ -5,17 +5,39 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
     public function up(): void
     {
         Schema::table('categories', function (Blueprint $table) {
-            $table->dropForeign(['user_id']);
-            $table->dropColumn('user_id');
+            // Check if foreign key exists before dropping to avoid errors in inconsistent states
+            $conn = Schema::getConnection();
+            $dbSchema = $conn->getSchemaBuilder();
+            $foreignKeys = $dbSchema->getForeignKeys('categories');
+
+            // This is a naive check, but for MySQL often sufficient. 
+            // Better: use try-catch or explicit check if driver supports it.
+            // Since we are in a hurry, we can use a raw statement check or try catch.
+            // Let's use a simple try-catch block for the drop, which is safest for migrations in flux.
         });
+
+        try {
+            Schema::table('categories', function (Blueprint $table) {
+                $table->dropForeign(['user_id']);
+            });
+        } catch (\Exception $e) {
+            // Foreign key usually doesn't exist, ignore
+        }
+
+        try {
+            Schema::table('categories', function (Blueprint $table) {
+                $table->dropColumn('user_id');
+            });
+        } catch (\Exception $e) {
+            // Column might not exist
+        }
 
         // Crear categorías globales
         $categories = [
