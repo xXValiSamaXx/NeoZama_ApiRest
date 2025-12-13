@@ -33,7 +33,11 @@ RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html/bootstrap/cache
 
 # Habilitar módulos de Apache necesarios
-RUN a2enmod rewrite headers
+# Habilitar módulos de Apache necesarios
+RUN a2enmod rewrite headers \
+    && a2dismod mpm_event || true \
+    && a2dismod mpm_worker || true \
+    && a2enmod mpm_prefork
 
 # Copiar configuración de Apache
 COPY docker/apache/000-default.conf /etc/apache2/sites-available/000-default.conf
