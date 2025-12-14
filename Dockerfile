@@ -35,10 +35,8 @@ RUN chown -R www-data:www-data /var/www/html \
 # Habilitar módulos de Apache necesarios
 # Habilitar módulos de Apache necesarios
 RUN a2enmod rewrite headers \
-    && rm -f /etc/apache2/mods-enabled/mpm_event.load \
-    && rm -f /etc/apache2/mods-enabled/mpm_event.conf \
-    && rm -f /etc/apache2/mods-enabled/mpm_worker.load \
-    && rm -f /etc/apache2/mods-enabled/mpm_worker.conf \
+    && rm -f /etc/apache2/mods-enabled/mpm_*.load \
+    && rm -f /etc/apache2/mods-enabled/mpm_*.conf \
     && a2enmod mpm_prefork
 
 # Copiar configuración de Apache
