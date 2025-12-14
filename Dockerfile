@@ -72,6 +72,8 @@ RUN echo '#!/bin/bash\n\
     php artisan view:cache\n\
     echo "📚 Generando documentación Swagger..."\n\
     php artisan l5-swagger:generate\n\
+    echo "🔗 Creando enlace simbólico de almacenamiento..."\n\
+    php artisan storage:link\n\
     echo "✅ Aplicación lista!"\n\
     echo "🌐 Swagger UI disponible en: /api/documentation"\n\
     apache2-foreground' > /usr/local/bin/start.sh \

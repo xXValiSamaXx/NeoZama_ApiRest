@@ -30,9 +30,11 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Secure Document User View (for Dependencies)
     Route::get('/documents/{document}/secure-view', function (\App\Models\Document $document) {
-        // Simple closure or controller method. Let's do a closure for the VIEW, logic in Controller is for API.
-        // Actually, let's reuse a Web Controller method for this View-UI.
-        // Defining a dedicated method in WebController is cleaner.
         return App::call([\App\Http\Controllers\Web\AccessRequestController::class, 'secureView'], ['document' => $document]);
+    });
+
+    // Admin Routes
+    Route::prefix('admin')->name('admin.')->group(function () {
+        Route::resource('dependencies', \App\Http\Controllers\Admin\DependencyController::class);
     });
 });

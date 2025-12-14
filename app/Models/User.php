@@ -112,4 +112,12 @@ class User extends Authenticatable
             ->withPivot('permission')
             ->withTimestamps();
     }
+    /**
+     * Categorías a las que tiene acceso (si es dependencia)
+     */
+    public function accessibleCategories()
+    {
+        return $this->belongsToMany(Category::class, 'category_user', 'user_id', 'category_id')
+            ->withTimestamps();
+    }
 }
