@@ -33,9 +33,21 @@ class CategoryController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        // REQUISITO: Uso de Eloquent ORM.
-        // 'withCount' es una función de Eloquent para contar relaciones sin traer todos los datos.
-        $categories = Category::withCount('documents')->get();
+        $user = $request->user();
+
+        if ($user->isAdmin()) {
+            // Admin sees everything
+            $categories = Category::withCount('documents')->orderBy('created_at', 'desc')->get();
+        } elseif ($user->isDependency()) {
+            // Dependencies only see what they are assigned to (for auditing/viewing)
+            $categories = $user->accessibleCategories()->withCount('documents')->get();
+        } else {
+            // Regular Users (Citizens) need to see categories to upload documents.
+            // Usually they upload to any "Public/Global" category or categories available to them.
+            // For now, return all categories so they can choose.
+            // TODO: If we need to hide internal categories from Citizens, add a 'is_public' flag later.
+            $categories = Category::withCount('documents')->orderBy('created_at', 'desc')->get();
+        }
 
         return response()->json($categories);
     }

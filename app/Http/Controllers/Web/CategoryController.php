@@ -9,24 +9,13 @@ use Illuminate\Support\Facades\Auth;
 
 class CategoryController extends Controller
 {
-    public function __construct()
-    {
-        // Enforce check for all methods
-        $this->middleware(function ($request, $next) {
-            if (!Auth::user()->isAdmin()) {
-                abort(403, 'Acceso restringido a administradores.');
-            }
-            return $next($request);
-        });
-    }
-
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        // Admins can see all categories, or maybe just global ones + their own?
-        // Let's show all for admin to manage master data.
+        // Admins and Dependencies can see categories.
+        // Enhance: Filter based on access if needed.
         $categories = Category::orderBy('created_at', 'desc')->get();
 
         return view('categories.index', compact('categories'));
@@ -37,6 +26,9 @@ class CategoryController extends Controller
      */
     public function create()
     {
+        if (!Auth::user()->isAdmin()) {
+            abort(403, 'Acceso denegado.');
+        }
         return view('categories.create');
     }
 
@@ -45,20 +37,16 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
+        if (!Auth::user()->isAdmin()) {
+            abort(403, 'Acceso denegado.');
+        }
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
         ]);
 
         $category = new Category($validated);
-        // If an admin creates a category, it could be global (user_id = null) or personal.
-        // For "Master Data" usually it's global. Let's make it global by default for admins?
-        // Or keep it personal? The prompt said "maestro-detalle", so user->categories.
-        // But "Panel de control" usually implies system-wide management.
-        // Let's stick to the previous logic but allow admins to manage everything.
-        // If admin creates it, let's assign it to correct user or null. 
-        // For simplicity, let's keep assigning to Auth::id() for now, or null if checkbox "Global".
-        // Let's just save it.
         $category->user_id = Auth::id(); // Admin owns it
         $category->save();
 
@@ -71,6 +59,9 @@ class CategoryController extends Controller
      */
     public function edit(Category $category)
     {
+        if (!Auth::user()->isAdmin()) {
+            abort(403, 'Acceso denegado.');
+        }
         return view('categories.edit', compact('category'));
     }
 
@@ -79,6 +70,10 @@ class CategoryController extends Controller
      */
     public function update(Request $request, Category $category)
     {
+        if (!Auth::user()->isAdmin()) {
+            abort(403, 'Acceso denegado.');
+        }
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
@@ -95,6 +90,10 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
+        if (!Auth::user()->isAdmin()) {
+            abort(403, 'Acceso denegado.');
+        }
+
         $category->delete();
 
         return redirect()->route('categories.index')
