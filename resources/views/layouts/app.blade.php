@@ -30,22 +30,36 @@
                                     class="{{ request()->routeIs('dashboard') ? 'border-indigo-500 text-gray-900' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700' }} inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
                                     Dashboard
                                 </a>
-                                <a href="{{ route('documents.index') }}"
-                                    class="{{ request()->routeIs('documents.*') ? 'border-indigo-500 text-gray-900' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700' }} inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
-                                    Documentos
-                                </a>
+
                                 @if(Auth::user()->isAdmin())
+                                    <!-- Admin Links -->
+                                    <a href="{{ route('categories.index') }}"
+                                        class="{{ request()->routeIs('categories.*') ? 'border-indigo-500 text-gray-900' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700' }} inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                                        Categorías
+                                    </a>
+                                    <a href="{{ route('admin.dependencies.index') }}"
+                                        class="{{ request()->routeIs('admin.dependencies.*') ? 'border-indigo-500 text-gray-900' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700' }} inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                                        Dependencias
+                                    </a>
+                                @else
+                                    <!-- User/Dependency Links -->
+                                    <a href="{{ route('documents.index') }}"
+                                        class="{{ request()->routeIs('documents.*') ? 'border-indigo-500 text-gray-900' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700' }} inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                                        Documentos
+                                    </a>
                                     <a href="{{ route('categories.index') }}"
                                         class="{{ request()->routeIs('categories.*') ? 'border-indigo-500 text-gray-900' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700' }} inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
                                         Categorías
                                     </a>
                                 @endif
+
                                 @if(Auth::user()->isAdmin() || Auth::user()->isDependency())
                                     <a href="{{ route('web.access-requests.index') }}"
                                         class="{{ request()->routeIs('web.access-requests.*') ? 'border-indigo-500 text-gray-900' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700' }} inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
                                         Solicitudes
                                     </a>
                                 @endif
+
                                 @if(Auth::user()->isAdmin())
                                     <a href="{{ url('/api/documentation') }}" target="_blank"
                                         class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">

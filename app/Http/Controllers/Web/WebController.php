@@ -17,16 +17,33 @@ class WebController extends Controller
         $user = Auth::user();
 
         if ($user->isAdmin()) {
-            $documentsCount = Document::count();
+            $dependenciesCount = \App\Models\User::where('role', \App\Models\User::ROLE_DEPENDENCY)->count();
             $categoriesCount = Category::count();
-            $recentDocuments = Document::with(['category', 'user'])->latest()->take(5)->get();
-        } else {
-            $documentsCount = $user->documents()->count();
-            $categoriesCount = $user->categories()->count();
-            $recentDocuments = $user->documents()->with('category')->latest()->take(5)->get();
-        }
+            // Admin doesn't see documents list anymore
+            $recentDocuments = collect(); // Empty collection
 
-        return view('dashboard', compact('documentsCount', 'categoriesCount', 'recentDocuments'));
+            return view('dashboard', compact('dependenciesCount', 'categoriesCount', 'recentDocuments'));
+        } else {
+            $documentsCount = $user->isDependency()
+                ? $user->accessibleCategories()->withCount('documents')->get()->sum('documents_count')
+                : $user->documents()->count();
+
+            $categoriesCount = $user->categories()->count(); // Or accessible categories count
+
+            // For dependency, fetch recent from accessible
+            if ($user->isDependency()) {
+                $categoryIds = $user->accessibleCategories()->pluck('categories.id')->toArray();
+                $recentDocuments = Document::with(['category', 'user'])
+                    ->whereIn('category_id', $categoryIds)
+                    ->latest()
+                    ->take(5)
+                    ->get();
+            } else {
+                $recentDocuments = $user->documents()->with('category')->latest()->take(5)->get();
+            }
+
+            return view('dashboard', compact('documentsCount', 'categoriesCount', 'recentDocuments'));
+        }
     }
 
     public function documents()
