@@ -13,7 +13,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Crear categorías globales
-        $this->call(GlobalCategoriesSeeder::class);
+        // Ejecutar Seeder de Demostración (que a su vez llama a Categories)
+        $this->call(DemoSeeder::class);
     }
 }

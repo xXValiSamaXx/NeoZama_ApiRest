@@ -37,8 +37,29 @@ class UserFactory extends Factory
      */
     public function unverified(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn(array $attributes) => [
             'email_verified_at' => null,
+        ]);
+    }
+
+    /**
+     * Indicate that the user is an administrator.
+     */
+    public function admin(): static
+    {
+        return $this->state(fn(array $attributes) => [
+            'is_admin' => true,
+            'role' => 'admin',
+        ]);
+    }
+
+    /**
+     * Indicate that the user is a dependency.
+     */
+    public function dependency(): static
+    {
+        return $this->state(fn(array $attributes) => [
+            'role' => 'dependency',
         ]);
     }
 }
