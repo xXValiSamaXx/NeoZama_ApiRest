@@ -58,8 +58,12 @@ ENV PORT=8080
 # Crear script de inicio
 RUN echo '#!/bin/bash\n\
     sed -i "s/80/$PORT/g" /etc/apache2/sites-available/000-default.conf /etc/apache2/ports.conf\n\
-    # Fix Permissions for Logs and Storage (Critical for Railway)\n\
+    # Fix Permissions for Logs and Storage (Aggressive)\n\
+    mkdir -p /var/www/html/storage/logs\n\
+    touch /var/www/html/storage/logs/laravel.log\n\
     chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache\n\
+    chmod -R 777 /var/www/html/storage /var/www/html/bootstrap/cache\n\
+    chmod 777 /var/www/html/storage/logs/laravel.log\n\
     chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache\n\
     # Fix MPM conflict at runtime to be 100% sure\n\
     rm -f /etc/apache2/mods-enabled/mpm_event.load\n\
