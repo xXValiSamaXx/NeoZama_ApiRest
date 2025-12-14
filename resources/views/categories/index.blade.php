@@ -6,7 +6,7 @@
             <h2 class="text-xl font-semibold leading-tight text-gray-800">
                 Categorías
             </h2>
-            <a href="{{ route('categories.create') }}"
+            <a href="{{ route('admin.categories.create') }}"
                 class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                 Nueva Categoría
             </a>
@@ -92,9 +92,9 @@
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                             @if($category->user_id == Auth::id())
-                                                <a href="{{ route('categories.edit', $category) }}"
+                                                <a href="{{ route('admin.categories.edit', $category) }}"
                                                     class="text-indigo-600 hover:text-indigo-900 mr-4">Editar</a>
-                                                <form action="{{ route('categories.destroy', $category) }}" method="POST"
+                                                <form action="{{ route('admin.categories.destroy', $category) }}" method="POST"
                                                     class="inline-block"
                                                     onsubmit="return confirm('¿Estás seguro de que deseas eliminar esta categoría?');">
                                                     @csrf

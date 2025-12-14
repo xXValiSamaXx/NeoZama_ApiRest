@@ -12,7 +12,7 @@
                 </p>
             </div>
             <div class="border-t border-gray-200 px-4 py-5 sm:p-6">
-                <form action="{{ route('categories.store') }}" method="POST">
+                <form action="{{ route('admin.categories.store') }}" method="POST">
                     @include('categories.form')
                 </form>
             </div>
