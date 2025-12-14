@@ -14,9 +14,6 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        // DEBUG PROBE
-        dd('✅ RUTA ALCANZADA: El controlador de Categorías funciona. El error está en la Vista o DB.');
-
         // Admins and Dependencies can see categories.
         // Enhance: Filter based on access if needed.
         $categories = Category::orderBy('created_at', 'desc')->get();

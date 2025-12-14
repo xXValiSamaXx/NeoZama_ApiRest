@@ -21,7 +21,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/dashboard', [WebController::class, 'dashboard'])->name('dashboard');
     Route::get('/documents', [WebController::class, 'documents'])->name('documents.index');
     Route::resource('categories', \App\Http\Controllers\Web\CategoryController::class);
-    Route::get('/debug-categories', [\App\Http\Controllers\Web\CategoryController::class, 'index']);
 
     // Access Requests
     Route::get('/access-requests', [\App\Http\Controllers\Web\AccessRequestController::class, 'index'])->name('web.access-requests.index');
