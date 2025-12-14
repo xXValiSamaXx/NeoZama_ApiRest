@@ -14,11 +14,26 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        // Admins and Dependencies can see categories.
-        // Enhance: Filter based on access if needed.
-        $categories = Category::orderBy('created_at', 'desc')->get();
+        try {
+            \Log::info('CategoryController@index: Iniciando...');
+            \Log::info('Usuario autenticado: ' . auth()->user()->email);
 
-        return view('categories.index', compact('categories'));
+            // Admins and Dependencies can see categories.
+            $categories = Category::orderBy('created_at', 'desc')->get();
+            \Log::info('Categorías cargadas: ' . $categories->count());
+
+            \Log::info('Intentando cargar vista...');
+            return view('categories.index', compact('categories'));
+        } catch (\Exception $e) {
+            \Log::error('ERROR en CategoryController@index: ' . $e->getMessage());
+            \Log::error('Stack trace: ' . $e->getTraceAsString());
+
+            // Mostrar error al usuario
+            return response()->view('errors.generic', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ], 500);
+        }
     }
 
     /**
