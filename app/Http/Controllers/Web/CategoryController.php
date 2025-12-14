@@ -65,8 +65,7 @@ class CategoryController extends Controller
         $category->user_id = Auth::id(); // Admin owns it
         $category->save();
 
-        return redirect()->route('categories.index')
-            ->with('success', 'Categoría creada exitosamente.');
+        return redirect()->route('admin.categories.index')->with('success', 'Categoría creada con éxito.');
     }
 
     /**
@@ -96,8 +95,7 @@ class CategoryController extends Controller
 
         $category->update($validated);
 
-        return redirect()->route('categories.index')
-            ->with('success', 'Categoría actualizada exitosamente.');
+        return redirect()->route('admin.categories.index')->with('success', 'Categoría actualizada correctamente.');
     }
 
     /**
