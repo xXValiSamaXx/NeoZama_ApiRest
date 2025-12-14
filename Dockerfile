@@ -58,6 +58,11 @@ ENV PORT=8080
 # Crear script de inicio
 RUN echo '#!/bin/bash\n\
     sed -i "s/80/$PORT/g" /etc/apache2/sites-available/000-default.conf /etc/apache2/ports.conf\n\
+    # Fix MPM conflict at runtime to be 100% sure\n\
+    rm -f /etc/apache2/mods-enabled/mpm_event.load\n\
+    rm -f /etc/apache2/mods-enabled/mpm_event.conf\n\
+    rm -f /etc/apache2/mods-enabled/mpm_worker.load\n\
+    rm -f /etc/apache2/mods-enabled/mpm_worker.conf\n\
     echo "🚀 Iniciando aplicación..."\n\
     echo "⚙️  Ejecutando migraciones..."\n\
     php artisan migrate --force\n\
