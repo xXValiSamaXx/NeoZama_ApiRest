@@ -7,23 +7,8 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>{{ config('app.name', 'Laravel') }}</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        gray: {
-                            900: '#111827',
-                            800: '#1f2937',
-                            700: '#374151',
-                        }
-                    }
-                }
-            }
-        }
-    </script>
+        <!-- Scripts -->
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -162,7 +147,7 @@
                                         @csrf
 
                                         <x-dropdown-link :href="route('logout')" onclick="event.preventDefault();
-                                                                    this.closest('form').submit();">
+                                                                            this.closest('form').submit();">
                                             {{ __('Log Out') }}
                                         </x-dropdown-link>
                                     </form>
@@ -191,42 +176,14 @@
         </main>
 
         <!-- Footer -->
-        <footer class="bg-white border-t border-gray-200 mt-auto">
+        <footer class="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-auto">
             <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                <p class="text-center text-sm text-gray-500">&copy; {{ date('Y') }} Bóveda de Documentos. Proyecto
+                <p class="text-center text-sm text-gray-500 dark:text-gray-400">&copy; {{ date('Y') }} Bóveda de
+                    Documentos. Proyecto
                     Universitario.</p>
             </div>
         </footer>
     </div>
-    <!-- Theme Toggle Logic -->
-    <script>
-        var themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
-        var themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
-
-        // Change the icons inside the button based on previous settings
-        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-            themeToggleLightIcon.classList.remove('hidden');
-        } else {
-            themeToggleDarkIcon.classList.remove('hidden');
-        }
-
-        var themeToggleBtn = document.getElementById('theme-toggle');
-
-        themeToggleBtn.addEventListener('click', function () {
-            // toggle icons inside button
-            themeToggleDarkIcon.classList.toggle('hidden');
-            themeToggleLightIcon.classList.toggle('hidden');
-
-            // if set via local storage previously
-            if (localStorage.theme === 'dark') {
-                document.documentElement.classList.remove('dark');
-                localStorage.theme = 'light';
-            } else {
-                document.documentElement.classList.add('dark');
-                localStorage.theme = 'dark';
-            }
-        });
-    </script>
 </body>
 
 </html>
