@@ -53,10 +53,11 @@ ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
 ENV PORT=8080
 
 # Actualizar configuración de Apache para usar el puerto de Railway
-RUN sed -i 's/80/${PORT}/g' /etc/apache2/sites-available/000-default.conf /etc/apache2/ports.conf
+# RUN sed -i 's/80/${PORT}/g' /etc/apache2/sites-available/000-default.conf /etc/apache2/ports.conf
 
 # Crear script de inicio
 RUN echo '#!/bin/bash\n\
+    sed -i "s/80/$PORT/g" /etc/apache2/sites-available/000-default.conf /etc/apache2/ports.conf\n\
     echo "🚀 Iniciando aplicación..."\n\
     echo "⚙️  Ejecutando migraciones..."\n\
     php artisan migrate --force\n\
