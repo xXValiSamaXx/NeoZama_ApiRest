@@ -24,6 +24,13 @@ WORKDIR /var/www/html
 # Copiar archivos del proyecto
 COPY . /var/www/html
 
+# Instalar Node.js y construir assets
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y nodejs \
+    && npm install \
+    && npm run build \
+    && rm -rf node_modules
+
 # Instalar dependencias de PHP
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 
