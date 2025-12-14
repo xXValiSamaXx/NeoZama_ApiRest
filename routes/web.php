@@ -20,7 +20,6 @@ Route::post('/logout', [AuthController::class, 'logoutWeb'])->name('logout');
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/dashboard', [WebController::class, 'dashboard'])->name('dashboard');
     Route::get('/documents', [WebController::class, 'documents'])->name('documents.index');
-    Route::resource('categories', \App\Http\Controllers\Web\CategoryController::class);
 
     // Access Requests
     Route::get('/access-requests', [\App\Http\Controllers\Web\AccessRequestController::class, 'index'])->name('web.access-requests.index');
@@ -35,6 +34,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Admin Routes
     Route::prefix('admin')->name('admin.')->middleware('admin')->group(function () {
+        Route::resource('categories', \App\Http\Controllers\Web\CategoryController::class);
         Route::resource('dependencies', \App\Http\Controllers\Admin\DependencyController::class);
     });
 });
