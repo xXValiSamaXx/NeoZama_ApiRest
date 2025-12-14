@@ -30,7 +30,11 @@ Route::middleware('auth:sanctum')->group(function () {
     // Secure Document User View (for Dependencies)
     Route::get('/documents/{document}/secure-view', function (\App\Models\Document $document) {
         return App::call([\App\Http\Controllers\Web\AccessRequestController::class, 'secureView'], ['document' => $document]);
-    });
+    })->name('documents.secure-view');
+
+    Route::get('/documents/{document}/stream', function (\App\Models\Document $document) {
+        return App::call([\App\Http\Controllers\Web\AccessRequestController::class, 'streamFile'], ['document' => $document]);
+    })->name('documents.stream');
 
     // Admin Routes
     Route::prefix('admin')->name('admin.')->middleware('admin')->group(function () {

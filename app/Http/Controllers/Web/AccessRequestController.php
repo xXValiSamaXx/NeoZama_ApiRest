@@ -143,4 +143,46 @@ class AccessRequestController extends Controller
 
         return view('documents.secure_view', compact('document'));
     }
+    /**
+     * Stream the file content for the previewer (Iframe/Object).
+     */
+    public function streamFile(Document $document)
+    {
+        $user = Auth::user();
+
+        // Permission Check (Same as secureView)
+        // Creator always can view
+        $isCreator = $user->id === $document->user_id;
+
+        // Admin always can view (if logical, otherwise restrict)
+        $isAdmin = $user->isAdmin();
+
+        // Dependency check via Share
+        $isShared = \App\Models\DocumentShare::where('document_id', $document->id)
+            ->where('shared_with_user_id', $user->id)
+            ->exists();
+
+        if (!$isCreator && !$isAdmin && !$isShared) {
+            abort(403);
+        }
+
+        // Return file
+        $path = $document->file_path; // Assuming 'file_path' is the column relative to storage
+        // Ensure path exists in storage
+        if (!\Illuminate\Support\Facades\Storage::exists($path)) {
+            abort(404, 'Archivo no encontrado');
+        }
+
+        // Log 'download/stream' action
+        \App\Models\DocumentAccessLog::create([
+            'document_id' => $document->id,
+            'user_id' => $user->id,
+            'action' => 'streamed_web',
+            'accessed_at' => now(),
+            'ip_address' => request()->ip(),
+            'user_agent' => request()->userAgent(),
+        ]);
+
+        return \Illuminate\Support\Facades\Storage::response($path);
+    }
 }
