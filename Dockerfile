@@ -58,6 +58,9 @@ ENV PORT=8080
 # Crear script de inicio
 RUN echo '#!/bin/bash\n\
     sed -i "s/80/$PORT/g" /etc/apache2/sites-available/000-default.conf /etc/apache2/ports.conf\n\
+    # Fix Permissions for Logs and Storage (Critical for Railway)\n\
+    chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache\n\
+    chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache\n\
     # Fix MPM conflict at runtime to be 100% sure\n\
     rm -f /etc/apache2/mods-enabled/mpm_event.load\n\
     rm -f /etc/apache2/mods-enabled/mpm_event.conf\n\

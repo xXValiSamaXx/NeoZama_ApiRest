@@ -35,6 +35,13 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Admin Routes
     Route::prefix('admin')->name('admin.')->group(function () {
-        Route::resource('dependencies', \App\Http\Controllers\Admin\DependencyController::class);
+        Route::middleware(function ($request, $next) {
+            if (!auth()->user() || !auth()->user()->isAdmin()) {
+                abort(403, 'Acceso denegado');
+            }
+            return $next($request);
+        })->group(function () {
+            Route::resource('dependencies', \App\Http\Controllers\Admin\DependencyController::class);
+        });
     });
 });

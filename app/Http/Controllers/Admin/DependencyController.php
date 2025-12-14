@@ -11,16 +11,7 @@ use Illuminate\Support\Facades\Auth;
 
 class DependencyController extends Controller
 {
-    public function __construct()
-    {
-        // Enforce Admin Access
-        $this->middleware(function ($request, $next) {
-            if (!Auth::user()->isAdmin()) {
-                abort(403, 'Acceso restringido a administradores.');
-            }
-            return $next($request);
-        });
-    }
+    // Constructor removed - access control handled via Route Middleware/Gates
 
     /**
      * Display a listing of dependency users.
