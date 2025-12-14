@@ -8,6 +8,22 @@
 
     <title>{{ config('app.name', 'Laravel') }}</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        gray: {
+                            900: '#111827',
+                            800: '#1f2937',
+                            700: '#374151',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -17,15 +33,16 @@
 
     <!-- Dark Mode Script -->
     <script>
+        // It's best to inline this in `head` to avoid FOUC
         if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-            document.documentElement.classList.add('dark')
+            document.documentElement.classList.add('dark');
         } else {
-            document.documentElement.classList.remove('dark')
+            document.documentElement.classList.remove('dark');
         }
     </script>
 </head>
 
-<body class="font-sans antialiased h-full">
+<body class="font-sans antialiased h-full text-gray-900 dark:text-gray-100">
     <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
         <!-- Navbar -->
         <nav class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
@@ -145,7 +162,7 @@
                                         @csrf
 
                                         <x-dropdown-link :href="route('logout')" onclick="event.preventDefault();
-                                                                this.closest('form').submit();">
+                                                                    this.closest('form').submit();">
                                             {{ __('Log Out') }}
                                         </x-dropdown-link>
                                     </form>

@@ -21,6 +21,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/dashboard', [WebController::class, 'dashboard'])->name('dashboard');
     Route::get('/documents', [WebController::class, 'documents'])->name('documents.index');
 
+    // Profile Routes
+    Route::get('/profile', [\App\Http\Controllers\Web\ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [\App\Http\Controllers\Web\ProfileController::class, 'update'])->name('profile.update');
+
     // Access Requests
     Route::get('/access-requests', [\App\Http\Controllers\Web\AccessRequestController::class, 'index'])->name('web.access-requests.index');
     Route::get('/access-requests/create', [\App\Http\Controllers\Web\AccessRequestController::class, 'create'])->name('web.access-requests.create');
