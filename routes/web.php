@@ -9,6 +9,15 @@ Route::get('/', function () {
 });
 
 // Auth Routes (Web)
+Route::get('/debug-test', function () {
+    return [
+        'user' => Auth::user(),
+        'id' => Auth::id(),
+        'session_id' => session()->getId(),
+        'cookie' => request()->cookie(config('session.cookie')),
+    ];
+});
+
 Route::get('/login', function () {
     return view('auth.login');
 })->name('login');
