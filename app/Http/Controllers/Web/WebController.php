@@ -48,6 +48,9 @@ class WebController extends Controller
 
     public function documents()
     {
+        \Log::info('WebController@documents hit');
+        \Log::info('User: ' . Auth::id());
+
         /** @var \App\Models\User $user */
         $user = Auth::user();
 
