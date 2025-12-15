@@ -15,9 +15,13 @@ class DocumentController extends Controller
      */
     public function show(Document $document)
     {
+        \Log::info('DocumentController@show hit for document: ' . $document->id);
+        \Log::info('User: ' . Auth::id());
+        
         $this->authorizeAccess($document);
 
         if (!Storage::disk('public')->exists($document->file_path)) {
+            \Log::error('File not found: ' . $document->file_path);
             abort(404, 'El archivo no existe.');
         }
 

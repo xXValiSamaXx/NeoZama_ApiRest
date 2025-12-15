@@ -17,7 +17,8 @@ Route::post('/login', [AuthController::class, 'loginWeb'])->name('login.post');
 Route::post('/logout', [AuthController::class, 'logoutWeb'])->name('logout');
 
 // Protected Routes
-Route::middleware('auth:sanctum')->group(function () {
+// Protected Routes
+Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [WebController::class, 'dashboard'])->name('dashboard');
     Route::get('/documents', [WebController::class, 'documents'])->name('documents.index');
 
