@@ -15,6 +15,10 @@ class DocumentController extends Controller
      */
     public function show(Document $document)
     {
+        if (!Auth::check()) {
+            return response('ERROR: Session Lost during show. User ID is null. Session ID: ' . session()->getId(), 401);
+        }
+
         \Log::info('DocumentController@show hit for document: ' . $document->id);
         \Log::info('User: ' . Auth::id());
         

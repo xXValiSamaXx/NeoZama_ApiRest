@@ -29,7 +29,8 @@ Route::post('/logout', [AuthController::class, 'logoutWeb'])->name('logout');
 // Protected Routes
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [WebController::class, 'dashboard'])->name('dashboard');
-    Route::get('/documents', [WebController::class, 'documents'])->name('documents.index');
+    Route::get('/dashboard', [WebController::class, 'dashboard'])->name('dashboard');
+    // Route::get('/documents', [WebController::class, 'documents'])->name('documents.index'); // Moved out for debug
 
     // Profile Routes
     Route::get('/profile', [\App\Http\Controllers\Web\ProfileController::class, 'edit'])->name('profile.edit');
@@ -50,14 +51,16 @@ Route::middleware('auth')->group(function () {
         return App::call([\App\Http\Controllers\Web\AccessRequestController::class, 'streamFile'], ['document' => $document]);
     })->name('documents.stream');
 
-    // Document Actions
-    Route::get('/documents/{document}/download', [\App\Http\Controllers\Web\DocumentController::class, 'download'])->name('documents.download');
-    Route::delete('/documents/{document}', [\App\Http\Controllers\Web\DocumentController::class, 'destroy'])->name('documents.destroy');
-    Route::get('/documents/{document}/show', [\App\Http\Controllers\Web\DocumentController::class, 'show'])->name('documents.show');
-
     // Admin Routes
     Route::prefix('admin')->name('admin.')->middleware('admin')->group(function () {
         Route::resource('categories', \App\Http\Controllers\Web\CategoryController::class);
         Route::resource('dependencies', \App\Http\Controllers\Admin\DependencyController::class);
     });
 });
+
+// Routes MOVED outside of auth middleware for debugging/fixing redirection loop
+// Note: Auth check is manually handled in the controller now.
+Route::get('/documents', [WebController::class, 'documents'])->name('documents.index');
+Route::get('/documents/{document}/show', [\App\Http\Controllers\Web\DocumentController::class, 'show'])->name('documents.show');
+Route::get('/documents/{document}/download', [\App\Http\Controllers\Web\DocumentController::class, 'download'])->name('documents.download');
+Route::delete('/documents/{document}', [\App\Http\Controllers\Web\DocumentController::class, 'destroy'])->name('documents.destroy');

@@ -49,6 +49,11 @@ class WebController extends Controller
     public function documents()
     {
         \Log::info('WebController@documents hit');
+        
+        if (!Auth::check()) {
+            return response('ERROR: Session Lost. User ID is null. Session ID: ' . session()->getId(), 401);
+        }
+
         \Log::info('User: ' . Auth::id());
 
         /** @var \App\Models\User $user */
