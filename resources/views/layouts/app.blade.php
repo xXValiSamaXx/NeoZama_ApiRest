@@ -35,13 +35,13 @@
                 <div class="flex justify-between h-16">
                     <div class="flex">
                         <div class="flex-shrink-0 flex items-center">
-                            <a href="{{ route('dashboard') }}">
+                            <a href="/dashboard">
                                 <span class="text-xl font-bold text-indigo-600 dark:text-indigo-400">BóvedaDocs</span>
                             </a>
                         </div>
                         <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
                             @auth
-                                <a href="{{ route('dashboard') }}"
+                                <a href="/dashboard"
                                     class="{{ request()->routeIs('dashboard') ? 'border-indigo-500 text-gray-900 dark:text-white' : 'border-transparent text-gray-500 dark:text-gray-400 hover:border-gray-300 dark:hover:border-gray-600 hover:text-gray-700 dark:hover:text-gray-300' }} inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
                                     Dashboard
                                 </a>
@@ -57,8 +57,8 @@
                                         Dependencias
                                     </a>
                                 @else
-                                    <a href="{{ route('documents.index') }}"
-                                        class="{{ request()->routeIs('documents.*') ? 'border-indigo-500 text-gray-900 dark:text-white' : 'border-transparent text-gray-500 dark:text-gray-400 hover:border-gray-300 dark:hover:border-gray-600 hover:text-gray-700 dark:hover:text-gray-300' }} inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                                    <a href="/documents"
+                                        class="{{ request()->is('documents*') ? 'border-indigo-500 text-gray-900 dark:text-white' : 'border-transparent text-gray-500 dark:text-gray-400 hover:border-gray-300 dark:hover:border-gray-600 hover:text-gray-700 dark:hover:text-gray-300' }} inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
                                         Documentos
                                     </a>
                                     @if(!Auth::user()->isDependency())

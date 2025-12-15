@@ -104,7 +104,7 @@
                                 <!-- Logic for special request view if needed, or simple view -->
                                 <!-- Usually dependency only sees what they can view. -->
                             @endif
-                            <a href="{{ route('documents.show', $doc) }}" target="_blank" class="inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded-full shadow-sm text-indigo-700 bg-indigo-100 hover:bg-indigo-200 dark:bg-indigo-900 dark:text-indigo-200 dark:hover:bg-indigo-800">
+                            <a href="/documents/{{ $doc->id }}/show" target="_blank" class="inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded-full shadow-sm text-indigo-700 bg-indigo-100 hover:bg-indigo-200 dark:bg-indigo-900 dark:text-indigo-200 dark:hover:bg-indigo-800">
                                 Ver
                             </a>
                         </div>
@@ -114,7 +114,7 @@
         </ul>
         <div class="bg-gray-50 dark:bg-gray-700 px-4 py-4 sm:px-6 rounded-b-lg">
             <div class="text-sm">
-                <a href="{{ route('documents.index') }}" class="font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-300">Ver todos los documentos <span aria-hidden="true">&rarr;</span></a>
+                <a href="/documents" class="font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-300">Ver todos los documentos <span aria-hidden="true">&rarr;</span></a>
             </div>
         </div>
     </div>
