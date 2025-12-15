@@ -35,7 +35,9 @@
                 <div class="flex justify-between h-16">
                     <div class="flex">
                         <div class="flex-shrink-0 flex items-center">
-                            <span class="text-xl font-bold text-indigo-600 dark:text-indigo-400">BóvedaDocs</span>
+                            <a href="{{ route('dashboard') }}">
+                                <span class="text-xl font-bold text-indigo-600 dark:text-indigo-400">BóvedaDocs</span>
+                            </a>
                         </div>
                         <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
                             @auth
@@ -55,15 +57,16 @@
                                         Dependencias
                                     </a>
                                 @else
-                                    <!-- User/Dependency Links -->
                                     <a href="{{ route('documents.index') }}"
                                         class="{{ request()->routeIs('documents.*') ? 'border-indigo-500 text-gray-900 dark:text-white' : 'border-transparent text-gray-500 dark:text-gray-400 hover:border-gray-300 dark:hover:border-gray-600 hover:text-gray-700 dark:hover:text-gray-300' }} inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
                                         Documentos
                                     </a>
-                                    <a href="{{ route('admin.categories.index') }}"
-                                        class="{{ request()->routeIs('admin.categories.*') ? 'border-indigo-500 text-gray-900' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700' }} inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
-                                        Categorías
-                                    </a>
+                                    @if(!Auth::user()->isDependency())
+                                        <a href="{{ route('admin.categories.index') }}"
+                                            class="{{ request()->routeIs('admin.categories.*') ? 'border-indigo-500 text-gray-900' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700' }} inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                                            Categorías
+                                        </a>
+                                    @endif
                                 @endif
 
                                 @if(Auth::user()->isAdmin() || Auth::user()->isDependency())

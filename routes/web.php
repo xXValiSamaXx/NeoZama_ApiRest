@@ -40,6 +40,11 @@ Route::middleware('auth:sanctum')->group(function () {
         return App::call([\App\Http\Controllers\Web\AccessRequestController::class, 'streamFile'], ['document' => $document]);
     })->name('documents.stream');
 
+    // Document Actions
+    Route::get('/documents/{document}/download', [\App\Http\Controllers\Web\DocumentController::class, 'download'])->name('documents.download');
+    Route::delete('/documents/{document}', [\App\Http\Controllers\Web\DocumentController::class, 'destroy'])->name('documents.destroy');
+    Route::get('/documents/{document}/show', [\App\Http\Controllers\Web\DocumentController::class, 'show'])->name('documents.show');
+
     // Admin Routes
     Route::prefix('admin')->name('admin.')->middleware('admin')->group(function () {
         Route::resource('categories', \App\Http\Controllers\Web\CategoryController::class);

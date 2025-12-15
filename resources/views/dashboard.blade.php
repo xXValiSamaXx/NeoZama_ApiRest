@@ -7,7 +7,7 @@
         <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
             @if(isset($dependenciesCount))
                 <!-- Admin View: Dependencies Count -->
-                <div class="bg-white overflow-hidden shadow rounded-lg">
+                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg">
                     <div class="p-5">
                         <div class="flex items-center">
                             <div class="flex-shrink-0 bg-blue-500 rounded-md p-3">
@@ -18,8 +18,8 @@
                             </div>
                             <div class="ml-5 w-0 flex-1">
                                 <dl>
-                                    <dt class="text-sm font-medium text-gray-500 truncate">Total Dependencias</dt>
-                                    <dd class="text-3xl font-semibold text-gray-900">{{ $dependenciesCount }}</dd>
+                                    <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">Total Dependencias</dt>
+                                    <dd class="text-3xl font-semibold text-gray-900 dark:text-white">{{ $dependenciesCount }}</dd>
                                 </dl>
                             </div>
                         </div>
@@ -27,7 +27,7 @@
                 </div>
             @else
                 <!-- User/Dependency View: Documents Count -->
-                <div class="bg-white overflow-hidden shadow rounded-lg">
+                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg">
                     <div class="p-5">
                         <div class="flex items-center">
                             <div class="flex-shrink-0 bg-indigo-500 rounded-md p-3">
@@ -38,8 +38,8 @@
                             </div>
                             <div class="ml-5 w-0 flex-1">
                                 <dl>
-                                    <dt class="text-sm font-medium text-gray-500 truncate">Total Documentos</dt>
-                                    <dd class="text-3xl font-semibold text-gray-900">{{ $documentsCount }}</dd>
+                                    <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">Total Documentos</dt>
+                                    <dd class="text-3xl font-semibold text-gray-900 dark:text-white">{{ $documentsCount }}</dd>
                                 </dl>
                             </div>
                         </div>
@@ -47,7 +47,7 @@
                 </div>
             @endif
 
-            <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg">
                 <div class="p-5">
                     <div class="flex items-center">
                         <div class="flex-shrink-0 bg-green-500 rounded-md p-3">
@@ -58,8 +58,8 @@
                         </div>
                         <div class="ml-5 w-0 flex-1">
                             <dl>
-                                <dt class="text-sm font-medium text-gray-500 truncate">Categorías</dt>
-                                <dd class="text-3xl font-semibold text-gray-900">{{ $categoriesCount }}</dd>
+                                <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">Categorías</dt>
+                                <dd class="text-3xl font-semibold text-gray-900 dark:text-white">{{ $categoriesCount }}</dd>
                             </dl>
                         </div>
                     </div>
@@ -70,27 +70,27 @@
         <!-- Recent Documents -->
         <!-- Recent Documents (Only for Non-Admins or if exists) -->
     @if($recentDocuments->isNotEmpty())
-    <div class="bg-white shadow sm:rounded-lg">
-        <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
-            <h3 class="text-lg leading-6 font-medium text-gray-900">Documentos Recientes</h3>
+    <div class="bg-white dark:bg-gray-800 shadow sm:rounded-lg">
+        <div class="px-4 py-5 sm:px-6 border-b border-gray-200 dark:border-gray-700">
+            <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white">Documentos Recientes</h3>
         </div>
-        <ul role="list" class="divide-y divide-gray-200">
+        <ul role="list" class="divide-y divide-gray-200 dark:divide-gray-700">
             @foreach($recentDocuments as $doc)
-                <li class="px-4 py-4 sm:px-6 hover:bg-gray-50">
+                <li class="px-4 py-4 sm:px-6 hover:bg-gray-50 dark:hover:bg-gray-700">
                     <div class="flex items-center justify-between">
                         <div class="flex items-center">
                             <div class="flex-shrink-0">
-                                <span class="inline-flex items-center justify-center h-10 w-10 rounded-full bg-gray-100">
-                                    <svg class="h-6 w-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <span class="inline-flex items-center justify-center h-10 w-10 rounded-full bg-gray-100 dark:bg-gray-600">
+                                    <svg class="h-6 w-6 text-gray-500 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                                     </svg>
                                 </span>
                             </div>
                             <div class="ml-4">
-                                <div class="text-sm font-medium text-indigo-600 truncate">{{ $doc->title }}</div>
-                                <div class="flex items-center text-sm text-gray-500">
+                                <div class="text-sm font-medium text-indigo-600 dark:text-indigo-400 truncate">{{ $doc->title }}</div>
+                                <div class="flex items-center text-sm text-gray-500 dark:text-gray-400">
                                     @if(Auth::user()->isAdmin())
-                                        <span class="font-semibold text-gray-700 mr-1">{{ $doc->user->name }}</span>
+                                        <span class="font-semibold text-gray-700 dark:text-gray-300 mr-1">{{ $doc->user->name }}</span>
                                         <span class="mx-1">&bull;</span>
                                     @endif
                                     <span class="truncate">{{ $doc->category->name ?? 'Sin Categoría' }}</span>
@@ -104,7 +104,7 @@
                                 <!-- Logic for special request view if needed, or simple view -->
                                 <!-- Usually dependency only sees what they can view. -->
                             @endif
-                            <a href="#" class="inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded-full shadow-sm text-indigo-700 bg-indigo-100 hover:bg-indigo-200">
+                            <a href="{{ route('documents.show', $doc) }}" target="_blank" class="inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded-full shadow-sm text-indigo-700 bg-indigo-100 hover:bg-indigo-200 dark:bg-indigo-900 dark:text-indigo-200 dark:hover:bg-indigo-800">
                                 Ver
                             </a>
                         </div>
@@ -112,9 +112,9 @@
                 </li>
             @endforeach
         </ul>
-        <div class="bg-gray-50 px-4 py-4 sm:px-6 rounded-b-lg">
+        <div class="bg-gray-50 dark:bg-gray-700 px-4 py-4 sm:px-6 rounded-b-lg">
             <div class="text-sm">
-                <a href="{{ route('documents.index') }}" class="font-medium text-indigo-600 hover:text-indigo-500">Ver todos los documentos <span aria-hidden="true">&rarr;</span></a>
+                <a href="{{ route('documents.index') }}" class="font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-300">Ver todos los documentos <span aria-hidden="true">&rarr;</span></a>
             </div>
         </div>
     </div>
